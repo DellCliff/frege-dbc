@@ -45,3 +45,13 @@ main = do
 
     println "END"
 ```
+Prints
+```
+START
+drop_res: false
+create_res: false
+insert_res: false
+[Right [Long: 1, String: user 1, String: 2015-08-22T05:31:54], Right [Long: 2, String: user 2, String: 1955-01-10T05:31:54], Right [Long: 3, String: user 3, String: 1985-03-7T05:31:54], Left java.lang.IllegalStateException: SQLite JDBC: inconsistent internal state]
+END
+runtime 0.612 wallclock seconds.
+```
