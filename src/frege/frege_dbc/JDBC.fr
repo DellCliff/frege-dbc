@@ -711,10 +711,10 @@ data ResultSet = mutable native java.sql.ResultSet where
   pure native close_cursors_at_commit "java.sql.ResultSet.CLOSE_CURSORS_AT_COMMIT" :: Int
 
   native close :: ResultSet -> IO () throws SQLException
-  
+
   native getBigDecimal :: ResultSet -> Int -> IO BigDecimal throws SQLException
                         | ResultSet -> String -> IO BigDecimal throws SQLException
-  
+
   native getBoolean :: ResultSet -> Int -> IO Bool throws SQLException
                      | ResultSet -> String -> IO Bool throws SQLException
 
@@ -756,7 +756,7 @@ data ResultSet = mutable native java.sql.ResultSet where
                     | ResultSet -> String -> Class t -> IO t throws SQLException
 
   native getRow :: ResultSet -> IO Int throws SQLException
-  
+
   native getShort :: ResultSet -> Int -> IO Short throws SQLException
                    | ResultSet -> String -> IO Short throws SQLException
 
@@ -770,7 +770,7 @@ data ResultSet = mutable native java.sql.ResultSet where
                        | ResultSet -> String -> IO Timestamp throws SQLException
 
   native getType :: ResultSet -> IO Int throws SQLException
-  
+
   native getWarnings :: ResultSet -> IO SQLWarning throws SQLException
 
   native isAfterLast :: ResultSet -> IO Bool throws SQLException
@@ -807,7 +807,7 @@ data ResultSetMetaData = mutable native java.sql.ResultSetMetaData where
 
   native getColumnCount :: ResultSetMetaData -> IO Int throws SQLException
 
-  native getColumnDisplaySize :: ResultSetMetaData -> Int -> IO Int throws SQLException 
+  native getColumnDisplaySize :: ResultSetMetaData -> Int -> IO Int throws SQLException
 
   native getColumnLabel :: ResultSetMetaData -> Int -> IO String throws SQLException
 
@@ -836,7 +836,7 @@ data ResultSetMetaData = mutable native java.sql.ResultSetMetaData where
   native isNullable :: ResultSetMetaData -> Int -> IO Int throws SQLException
 
   native isReadOnly :: ResultSetMetaData -> Int -> IO Bool throws SQLException
-  
+
   native isSearchable :: ResultSetMetaData -> Int -> IO Bool throws SQLException
 
   native isSigned :: ResultSetMetaData -> Int -> IO Bool throws SQLException

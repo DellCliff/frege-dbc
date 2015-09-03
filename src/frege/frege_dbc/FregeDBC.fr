@@ -20,26 +20,26 @@ data SqlValue = SqlShort Short
     | SqlNull
 
 data SqlColDesc = SqlColDesc {
-	catalogName :: String,
-	columnClassName :: String,
-	columnDisplaySize :: Int,
-	columnLabel :: String,
-	columnName :: String,
-	columnType :: Int,
-	columnTypeName :: String,
-	precision :: Int,
-	scale :: Int,
-	schemaName :: String,
-	tableName :: String,
-	isAutoIncrement :: Bool,
-	isCaseSensitive :: Bool,
-	isCurrency :: Bool,
-	isDefinitelyWritable :: Bool,
-	isNullable :: Int,
-	isReadOnly :: Bool,
-	isSearchable :: Bool,
-	isSigned :: Bool,
-	isWritable :: Bool
+    catalogName :: String,
+    columnClassName :: String,
+    columnDisplaySize :: Int,
+    columnLabel :: String,
+    columnName :: String,
+    columnType :: Int,
+    columnTypeName :: String,
+    precision :: Int,
+    scale :: Int,
+    schemaName :: String,
+    tableName :: String,
+    isAutoIncrement :: Bool,
+    isCaseSensitive :: Bool,
+    isCurrency :: Bool,
+    isDefinitelyWritable :: Bool,
+    isNullable :: Int,
+    isReadOnly :: Bool,
+    isSearchable :: Bool,
+    isSigned :: Bool,
+    isWritable :: Bool
 }
 
 -- Throws Exceptions. Not meant to be used outside this file.
@@ -63,7 +63,7 @@ columnConverter rset idx sql_type
     | sql_type == Types.varchar = columnConverter rset idx Types.longvarchar
     | sql_type == Types.char = columnConverter rset idx Types.longvarchar
     | sql_type == Types.clob = columnConverter rset idx Types.longvarchar
-    
+
     | sql_type == Types.longnvarchar = do
         c <- ResultSet.getNString rset idx
         didreadnull <- ResultSet.wasNull rset
@@ -178,60 +178,60 @@ columnConverter rset idx sql_type
 
 describeColumn :: ResultSetMetaData -> Int -> IO (Either Throwable SqlColDesc)
 describeColumn meta x =
-	catchAll do
-		    catalogName <- ResultSetMetaData.getCatalogName meta x
-		    columnClassName <- ResultSetMetaData.getColumnClassName meta x
-		    columnDisplaySize <- ResultSetMetaData.getColumnDisplaySize meta x
-		    columnLabel <- ResultSetMetaData.getColumnLabel meta x
-		    columnName <- ResultSetMetaData.getColumnName meta x
-		    columnType <- ResultSetMetaData.getColumnType meta x
-		    columnTypeName <- ResultSetMetaData.getColumnTypeName meta x
-		    precision <- ResultSetMetaData.getPrecision meta x
-		    scale <- ResultSetMetaData.getScale meta x
-		    schemaName <- ResultSetMetaData.getSchemaName meta x
-		    tableName <- ResultSetMetaData.getTableName meta x
-		    isAutoIncrement <- ResultSetMetaData.isAutoIncrement meta x
-		    isCaseSensitive <- ResultSetMetaData.isCaseSensitive meta x
-		    isCurrency <- ResultSetMetaData.isCurrency meta x
-		    isDefinitelyWritable <- ResultSetMetaData.isDefinitelyWritable meta x
-		    isNullable <- ResultSetMetaData.isNullable meta x
-		    isReadOnly <- ResultSetMetaData.isReadOnly meta x
-		    isSearchable <- ResultSetMetaData.isSearchable meta x
-		    isSigned <- ResultSetMetaData.isSigned meta x
-		    isWritable <- ResultSetMetaData.isWritable meta x
-		    return SqlColDesc { catalogName, columnClassName,
-		        columnDisplaySize, columnLabel,
-		        columnName, columnType,
-		        columnTypeName, precision, scale,
-		        schemaName, tableName, isAutoIncrement,
-		        isCaseSensitive, isCurrency,
-		        isDefinitelyWritable, isNullable,
-		        isReadOnly, isSearchable,
-		        isSigned, isWritable }
+    catchAll do
+            catalogName <- ResultSetMetaData.getCatalogName meta x
+            columnClassName <- ResultSetMetaData.getColumnClassName meta x
+            columnDisplaySize <- ResultSetMetaData.getColumnDisplaySize meta x
+            columnLabel <- ResultSetMetaData.getColumnLabel meta x
+            columnName <- ResultSetMetaData.getColumnName meta x
+            columnType <- ResultSetMetaData.getColumnType meta x
+            columnTypeName <- ResultSetMetaData.getColumnTypeName meta x
+            precision <- ResultSetMetaData.getPrecision meta x
+            scale <- ResultSetMetaData.getScale meta x
+            schemaName <- ResultSetMetaData.getSchemaName meta x
+            tableName <- ResultSetMetaData.getTableName meta x
+            isAutoIncrement <- ResultSetMetaData.isAutoIncrement meta x
+            isCaseSensitive <- ResultSetMetaData.isCaseSensitive meta x
+            isCurrency <- ResultSetMetaData.isCurrency meta x
+            isDefinitelyWritable <- ResultSetMetaData.isDefinitelyWritable meta x
+            isNullable <- ResultSetMetaData.isNullable meta x
+            isReadOnly <- ResultSetMetaData.isReadOnly meta x
+            isSearchable <- ResultSetMetaData.isSearchable meta x
+            isSigned <- ResultSetMetaData.isSigned meta x
+            isWritable <- ResultSetMetaData.isWritable meta x
+            return SqlColDesc { catalogName, columnClassName,
+                columnDisplaySize, columnLabel,
+                columnName, columnType,
+                columnTypeName, precision, scale,
+                schemaName, tableName, isAutoIncrement,
+                isCaseSensitive, isCurrency,
+                isDefinitelyWritable, isNullable,
+                isReadOnly, isSearchable,
+                isSigned, isWritable }
 
 describeResult :: ResultSet -> IO [SqlColDesc]
 describeResult rset =
-	try unsafe rset `catch` default
-	where
-		unsafe rset = do
-			meta <- ResultSet.getMetaData rset
-			columnCount <- ResultSetMetaData.getColumnCount meta
-			res <- sequence $ map (describeColumn meta) [1..columnCount]
-			allRight = not $ any (either (\x -> true) (\x -> false)) res
-			getRight (Right x) = x
-			if allRight
-				then return $ map getRight res
-				else return $ []
-		default :: Exception -> IO [SqlColDesc]
-		default e = do return []
+    try unsafe rset `catch` default
+    where
+        unsafe rset = do
+            meta <- ResultSet.getMetaData rset
+            columnCount <- ResultSetMetaData.getColumnCount meta
+            res <- sequence $ map (describeColumn meta) [1..columnCount]
+            allRight = not $ any (either (\x -> true) (\x -> false)) res
+            getRight (Right x) = x
+            if allRight
+                then return $ map getRight res
+                else return $ []
+        default :: Exception -> IO [SqlColDesc]
+        default e = do return []
 
 fetchRow :: ResultSet -> IO (Either Throwable [SqlValue])
 fetchRow rset =
-	catchAll unsafe
-	where
-		unsafe = do
-			ResultSet.next rset
-			meta <- ResultSet.getMetaData rset
-			columnCount <- ResultSetMetaData.getColumnCount meta
-			columnTypes <- sequence $ map (ResultSetMetaData.getColumnType meta) [1..columnCount]
-			sequence $ [columnConverter rset idx ctype | (idx, ctype) <- (zip [1..columnCount] columnTypes)]
+    catchAll unsafe
+    where
+        unsafe = do
+            ResultSet.next rset
+            meta <- ResultSet.getMetaData rset
+            columnCount <- ResultSetMetaData.getColumnCount meta
+            columnTypes <- sequence $ map (ResultSetMetaData.getColumnType meta) [1..columnCount]
+            sequence $ [columnConverter rset idx ctype | (idx, ctype) <- (zip [1..columnCount] columnTypes)]
